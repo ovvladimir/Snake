@@ -4,6 +4,7 @@ import random
 SIZE = 40
 running = False
 dr = [0]
+clr = ['red', 'orange', 'purple1', 'red4', 'gold', 'salmon', 'cyan2']
 
 screen = Screen()
 screen.delay(0)
@@ -51,7 +52,7 @@ text.hideturtle()
 text.speed(0)
 text.pu()
 text.setpos(0, 150)
-text.color("yellow")
+text.color('yellow')
 
 snake.hideturtle()
 food.hideturtle()
@@ -79,11 +80,9 @@ def start_snake():
         dr[0] = 0
         text.clear()
         text.setpos(-380, 300)
-        text.write("Score: " + str(score), align="left",
-                   font=('Arial', 14, 'bold'))
+        text.write(f'Score: {score}', align='left', font='arial 14 bold')
         text.setpos(370, 300)
-        text.write(f"Speed: {str(255-spd)} km/h", align="right",
-                   font=('Arial', 14, 'bold'))
+        text.write(f'Speed: {255-spd} km/h', align='right', font='arial 14 bold')
         snake.showturtle()
         food.showturtle()
         tr.showturtle()
@@ -111,12 +110,12 @@ def goto_tail(n, x1, y1):
 
 def startgame():
     text.setpos(0, 0)
-    text.write("press key 'space' to start the game", align="center",
-               font=('Arial', 28, 'bold'))
+    text.write("press key 'space' to start the game", align='center',
+               font='arial 28 bold')
 
 
 def main():
-    global score, spd, running
+    global running, spd, score
 
     if running:
         for n in range(len(list_snake)-1, 0, -1):
@@ -127,15 +126,14 @@ def main():
         if snake.distance(food) < 2 or tr.pos() == food.pos():
             food.setposition(random.randrange(-360, 400, SIZE),
                              random.randrange(-280, 320, SIZE))
+            food.color('green', clr[random.randint(0, len(clr)-1)])
             score += 1
             spd -= 5
             text.clear()
             text.setpos(-380, 300)
-            text.write("Score: " + str(score), align="left",
-                       font=("Arial", 14, 'bold'))
+            text.write(f'Score: {score}', align='left', font='arial 14 bold')
             text.setpos(370, 300)
-            text.write(f"Speed: {str(255-spd)} km/h", align="right",
-                       font=("Arial", 14, 'bold'))
+            text.write(f'Speed: {255-spd} km/h', align='right', font='arial 14 bold')
 
         if score > len(list_snake):
             tail = list_snake[-1].clone()
