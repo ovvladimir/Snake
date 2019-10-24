@@ -30,8 +30,7 @@ list_snake = [snake]
 snake.speed(0)
 snake.up()
 snake.shapesize(2)
-snake.color('green')
-snake.pencolor('red')
+snake.color('red', 'green')
 
 tr = Turtle(shape='arrow')
 tr.up()
@@ -42,8 +41,7 @@ food = Turtle(shape='circle')
 food.up()
 food.shapesize(1.5, 1.5, 3)
 food.speed(0)
-food.color('red')
-food.pencolor('green')
+food.color('green', 'red')
 food.setpos(random.randrange(-360, 400, SIZE),
             random.randrange(-280, 320, SIZE))
 
