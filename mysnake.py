@@ -2,7 +2,8 @@ from turtle import Turtle, Screen
 import random
 
 SIZE = 40
-running = False
+score = [1]
+spd = [250]
 dr = [0]
 clr = ['red', 'orange', 'purple1', 'red4', 'gold', 'salmon', 'cyan2']
 
@@ -49,7 +50,6 @@ text = Turtle()
 text.hideturtle()
 text.speed(0)
 text.pu()
-text.setpos(0, 150)
 text.color('yellow')
 
 snake.hideturtle()
@@ -57,47 +57,52 @@ food.hideturtle()
 tr.hideturtle()
 
 
-def key_up(): dr[0] = 90
+def key_up():
+    dr[0] = 90
 
 
-def key_down(): dr[0] = 270
+def key_down():
+    dr[0] = 270
 
 
-def key_right(): dr[0] = 0
+def key_right():
+    dr[0] = 0
 
 
-def key_left(): dr[0] = 180
+def key_left():
+    dr[0] = 180
 
 
 def start_snake():
-    global running, spd, score
-    if not running:
-        snake.goto(0, 0)
-        spd = 250
-        score = 1
-        dr[0] = 0
-        text.clear()
-        text.setpos(-380, 300)
-        text.write(f'Score: {score}', align='left', font='arial 14 bold')
-        text.setpos(370, 300)
-        text.write(f'Speed: {255-spd} km/h', align='right', font='arial 14 bold')
-        snake.showturtle()
-        food.showturtle()
-        tr.showturtle()
-        running = True
-        main()
+    snake.goto(0, 0)
+    spd[0] = 250
+    score[0] = 1
+    dr[0] = 0
+    game_text()
+    snake.showturtle()
+    food.showturtle()
+    tr.showturtle()
+    main()
+
+
+def game_text():
+    text.clear()
+    text.setpos(-380, 300)
+    text.write(f'Score: {score[0]}', align='left', font='arial 14 bold')
+    text.setpos(370, 300)
+    text.write(f'Speed: {255-spd[0]} km/h', align='right', font='arial 14 bold')
 
 
 def goto_snake(x, y):
     snake.seth(dr[0])
     if dr[0] == 0:
-        snake.setx(x+SIZE)
+        snake.setx(x + SIZE)
     if dr[0] == 90:
-        snake.sety(y+SIZE)
+        snake.sety(y + SIZE)
     if dr[0] == 180:
-        snake.setx(x-SIZE)
+        snake.setx(x - SIZE)
     if dr[0] == 270:
-        snake.sety(y-SIZE)
+        snake.sety(y - SIZE)
     tr.seth(dr[0])
     tr.setpos(snake.pos())
 
@@ -113,51 +118,49 @@ def startgame():
 
 
 def main():
-    global running, spd, score
+    for n in range(len(list_snake) - 1, 0, -1):
+        goto_tail(n, list_snake[n - 1].xcor(), list_snake[n - 1].ycor())
 
-    if running:
-        for n in range(len(list_snake)-1, 0, -1):
-            goto_tail(n, list_snake[n-1].xcor(), list_snake[n-1].ycor())
+    goto_snake(snake.xcor(), snake.ycor())
 
-        goto_snake(snake.xcor(), snake.ycor())
+    if snake.distance(food) < 2 or tr.pos() == food.pos():
+        food.setposition(
+            random.randrange(-360, 400, SIZE),
+            random.randrange(-280, 320, SIZE))
+        food.color('green', clr[random.randint(0, len(clr) - 1)])
+        score[0] += 1
+        spd[0] -= 5
+        game_text()
 
-        if snake.distance(food) < 2 or tr.pos() == food.pos():
-            food.setposition(random.randrange(-360, 400, SIZE),
-                             random.randrange(-280, 320, SIZE))
-            food.color('green', clr[random.randint(0, len(clr)-1)])
-            score += 1
-            spd -= 5
-            text.clear()
-            text.setpos(-380, 300)
-            text.write(f'Score: {score}', align='left', font='arial 14 bold')
-            text.setpos(370, 300)
-            text.write(f'Speed: {255-spd} km/h', align='right', font='arial 14 bold')
+    if score[0] > len(list_snake):
+        tail = list_snake[-1].clone()
+        list_snake.append(tail)
+        tail.speed(0)
 
-        if score > len(list_snake):
-            tail = list_snake[-1].clone()
-            list_snake.append(tail)
-            tail.speed(0)
+    if snake.xcor() > 360 or snake.xcor() < -360 or \
+            snake.ycor() > 280 or snake.ycor() < -280:
+        for c in range(1, len(list_snake)):
+            list_snake[c].reset()
+            list_snake[c].hideturtle()
+        del list_snake[1:]
+        snake.hideturtle()
+        tr.hideturtle()
+        food.hideturtle()
+        startgame()
+        return
 
-        if (snake.xcor() > 360 or snake.xcor() < -360 or
-                snake.ycor() > 280 or snake.ycor() < -280):
-            running = False
-            for c in range(1, len(list_snake)):
-                list_snake[c].reset()
-                list_snake[c].hideturtle()
-            del list_snake[1:]
-            snake.hideturtle()
-            tr.hideturtle()
-            food.hideturtle()
-            startgame()
-
-        screen.ontimer(main, spd)
+    screen.ontimer(main, spd[0])
 
 
-screen.onkey(key_up, 'Up')
-screen.onkey(key_down, 'Down')
-screen.onkey(key_left, 'Left')
-screen.onkey(key_right, 'Right')
-screen.onkey(start_snake, 'space')
+dct = {
+    key_up: 'Up',
+    key_down: 'Down',
+    key_left: 'Left',
+    key_right: 'Right',
+    start_snake: 'space'
+}
+for key, value in dct.items():
+    screen.onkey(key, value)
 screen.listen()
 
 startgame()
