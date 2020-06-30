@@ -32,11 +32,13 @@ snake.speed(0)
 snake.up()
 snake.shapesize(2)
 snake.color('red', 'green')
+snake.hideturtle()
 
 tr = Turtle(shape='arrow')
 tr.up()
 tr.speed(0)
 tr.color('red')
+tr.hideturtle()
 
 food = Turtle(shape='circle')
 food.up()
@@ -45,16 +47,13 @@ food.speed(0)
 food.color('green', 'red')
 food.setpos(random.randrange(-360, 400, SIZE),
             random.randrange(-280, 320, SIZE))
+food.hideturtle()
 
 text = Turtle()
 text.hideturtle()
 text.speed(0)
 text.pu()
 text.color('yellow')
-
-snake.hideturtle()
-food.hideturtle()
-tr.hideturtle()
 
 
 def key_up():
